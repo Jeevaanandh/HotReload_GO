@@ -15,7 +15,7 @@ int main() {
     int wd= inotify_add_watch(
         fd,
         "./test",
-        IN_CREATE | IN_MODIFY | IN_DELETE   // Anytime one of these are triggered, a stuct is returned.
+        IN_CLOSE_WRITE | IN_MOVED_TO | IN_DELETE   // Anytime one of these are triggered, a stuct is returned.
     );
 
     while(1) {
@@ -33,13 +33,13 @@ int main() {
 
 
 
-            if (event->mask & IN_CREATE) {
-                printf("File Created %s\n", event->name);
+            if (event->mask & IN_CLOSE_WRITE) {
+                printf("File modified %s\n", event->name);
             }
 
-            if (event->mask & IN_MODIFY) {
+            if (event->mask & IN_MOVED_TO) {
 
-                printf("File Modified %s\n", event->name);
+                printf("File moved %s\n", event->name);
             }
 
             incr:
