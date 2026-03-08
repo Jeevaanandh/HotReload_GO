@@ -30,7 +30,7 @@ int addWatch(char *path) {
     int wd= inotify_add_watch(
                     fd,
                     path,
-                    IN_CLOSE_WRITE | IN_MOVED_TO | IN_DELETE | IN_CREATE   // Anytime one of these are triggered, a stuct is returned.
+                    IN_CLOSE_WRITE | IN_MOVED_TO | IN_MOVED_FROM | IN_CREATE   // Anytime one of these are triggered, a stuct is returned.
             );
 
     WatchMap[directories].wd= wd;
@@ -79,10 +79,23 @@ void parse(char *path, int flag) {
 }
 
 
-int main() {
+
+//Modify the name of this function.
+/*
+	This function should take:
+		1. Project folder path
+		2. Build command
+		3. Run command
+
+	This is the function the CLI will call
+*/
+int watcher(char *projectFolder, char *build_cmd, char *run_cmd) {
     fd = inotify_init();
 
-    parse("./test", 0);
+    parse(projectFolder, 0);
+
+	//THis is the initail call to start the server.
+    startServer(projectFolder, build_cmd, run_cmd);
 
     while(1) {
         //This waits until something is added to the buffer
@@ -99,7 +112,7 @@ int main() {
 
 
 
-            if (event->mask & IN_CREATE || event->mask & IN_MOVED_TO) {
+            if ((event->mask & IN_CREATE) || (event->mask & IN_MOVED_TO)) {
                 if (event->mask & IN_ISDIR) {
                     char *directoryPath= getpath(event->wd);
                     char fullpath[PATH_MAX];
@@ -110,7 +123,7 @@ int main() {
 
                     printf("Directory modified: %s/%s\n", directoryPath, event->name);
 
-                    startServer();
+                    startServer(projectFolder, build_cmd, run_cmd);
                 }
 
                 else {
@@ -118,17 +131,25 @@ int main() {
                 }
             }
 
-            if (!(strstr(event->name, ".txt"))) goto incr;
+            if (event->mask & IN_MOVED_FROM) {
+                printf("File deleted %s\n", event->name);
+                startServer(projectFolder, build_cmd, run_cmd);
+                goto incr;
+            }
+
+
+
+            if (!(strstr(event->name, ".go"))) goto incr;
 
             if (event->mask & IN_CLOSE_WRITE) {
                 printf("File modified %s\n", event->name);
-                startServer();
+                startServer(projectFolder, build_cmd, run_cmd);
             }
 
 
-            if (event->mask & IN_DELETE) {
-                printf("File deleted %s\n", event->name);
-            }
+
+
+
 
             incr:
             i+= sizeof(struct inotify_event)+event->len;
@@ -138,4 +159,10 @@ int main() {
     }
 
 }
+
+
+
+
+
+
 

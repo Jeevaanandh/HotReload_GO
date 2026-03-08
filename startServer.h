@@ -5,6 +5,7 @@
 #ifndef HOTRELOAD_GO_STARTSERVER_H
 #define HOTRELOAD_GO_STARTSERVER_H
 
-int startServer();
+int startServer(char *projectFolder, char *build_cmd, char *run_cmd);
+void handle_sigint(int sig);
 
 #endif //HOTRELOAD_GO_STARTSERVER_H
