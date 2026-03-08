@@ -14,7 +14,7 @@ int child_pid=-1;
 
 //This is to kill all child processes after the user stops the hotreload using crtl+c
 void handle_sigint(int sig) {
-    printf("Stopping hotreload...\n");
+    printf("\nStopping hotreload...\n");
 
     if (child_pid > 0) {
         killpg(child_pid, SIGTERM);
@@ -124,6 +124,8 @@ int startServer(char *projectFolder, char *build_cmd, char *run_cmd) {
 		run(run_cmd, projectFolder);
 
 	}
+
+	return 0;
 
 
 }

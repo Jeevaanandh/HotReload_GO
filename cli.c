@@ -43,9 +43,7 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    printf("Project Folder: %s\n", root);
-    printf("Build Command: %s\n", build_cmd);
-    printf("Run Command: %s\n", run_cmd);
+
 
     watcher(root, build_cmd, run_cmd);
 }

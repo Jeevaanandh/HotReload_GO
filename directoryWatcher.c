@@ -132,7 +132,7 @@ int watcher(char *projectFolder, char *build_cmd, char *run_cmd) {
             }
 
             if (event->mask & IN_MOVED_FROM) {
-                printf("File deleted %s\n", event->name);
+                printf("Deleted: %s\n", event->name);
                 startServer(projectFolder, build_cmd, run_cmd);
                 goto incr;
             }
@@ -142,7 +142,7 @@ int watcher(char *projectFolder, char *build_cmd, char *run_cmd) {
             if (!(strstr(event->name, ".go"))) goto incr;
 
             if (event->mask & IN_CLOSE_WRITE) {
-                printf("File modified %s\n", event->name);
+                printf("File modified: %s\n", event->name);
                 startServer(projectFolder, build_cmd, run_cmd);
             }
 
