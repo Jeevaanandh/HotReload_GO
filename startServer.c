@@ -22,14 +22,16 @@ void run() {
         //Child Process
         // execute the command to start the server.
 
-        /*
-        char *args[] = {"echo", "Hello From Child Process", NULL};
-        execv("/bin/echo", args);
+
+        char *args[] = {"python3", "test/main.py", NULL};
+        execv("/usr/bin/python3", args);
         perror("execv failed");
-        */
-        printf("Hello From Child...\n");
-        sleep(10);
-        _exit(0);
+
+
+        // printf("Hello From Child...\n");
+        // sleep(10);
+        // _exit(0);
+
     }
 
 
